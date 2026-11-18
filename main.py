@@ -7,7 +7,7 @@ credenciais = []
 categorias = {
     "Banco": "Forte",
     "Rede Social": "Média",
-    "Estudo":" Média",
+    "Estudo": "Média",
     "Trabalho": "Forte",
     "Outros": "Fraca"
 }
@@ -50,35 +50,6 @@ def carregar_arquivo():
 
     except FileNotFoundError:
         pass
-# Registro no arquivo de auditoria
-def registrar_log(operacao, servico):
-    data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
-    arquivo = open("auditoria.log", "a", encoding="utf-8")
-    arquivo.write(
-        f"{data_hora} | Operação: {operacao} | Serviço: {servico}\n"
-    )
-    arquivo.close()
-
-# Consulta de logs:
-def consultar_logs():
-    try:
-        arquivo = open("auditoria.log", "r", encoding="utf-8")
-
-        print("\n---------- LOG DE AUDITORIA ----------")
-
-        vazio = True
-        for linha in arquivo:
-            print(linha.strip())
-            vazio = False
-
-        if vazio:
-            print("Nenhum registro encontrado.")
-
-        arquivo.close()
-
-    except FileNotFoundError:
-        print("Nenhum log foi gerado ainda.")
         
 #Carregar categrias
 def salvar_categorias():
@@ -551,7 +522,7 @@ def relatorio_seguranca():
 
         else:
             fracas += 1
-servicos_fracos.append(credencial["servico"])
+            servicos_fracos.append(credencial["servico"])
 
         if senha in senhas_encontradas:
             repetidas += 1
