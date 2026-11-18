@@ -403,18 +403,3 @@ while True:
 
     else:
         print("Opção inválida!")
-
-    elif opcao == "6":
-        revelar_senha()
-
-    elif opcao == "7":
-        cadastrar_categoria()
-
-    elif opcao == "8":
-        visualizar_categorias()
-
-    elif opcao == "9":
-        consultar_logs()
-
-    else:
-        print("Opção inválida!")
