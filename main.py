@@ -299,8 +299,16 @@ def cadastrar_credenciais():
     print("\nCategorias disponíveis:")
     visualizar_categorias()
 
-    categoria = input("\nDigite a categoria: ").strip()
-    if categoria not in categorias:
+    categoria_digitada = input("\nDigite a categoria: ").strip()
+
+    categoria = None
+
+    for cat in categorias:
+        if cat.lower() == categoria_digitada.lower():
+            categoria = cat
+            break
+
+    if categoria is None:
         print("Categoria não encontrada.")
         return
 
@@ -381,7 +389,7 @@ def revelar_senha():
     encontrado = False
 
     for credencial in credenciais:
-        if credencial["servico"] == servico_revelar:
+        if credencial["servico"].lower() == servico_revelar.lower():
             print("Senha:", credencial["senha"])
             registrar_log("Revelação de senha", servico_revelar)
             encontrado = True
@@ -398,7 +406,7 @@ def editar_credenciais():
     encontrado = False
 
     for credencial in credenciais:
-        if credencial["servico"] == servico_editar:
+        if credencial["servico"].lower() == servico_editar.lower():
             nova_senha = input("Qual será a senha nova? ")
             classificacao, motivos = analisar_senha(nova_senha,credencial["categoria"])
             exigencia = categorias[credencial["categoria"]]
@@ -431,7 +439,7 @@ def excluir_credenciais():
     encontrado = False
    
     for credencial in credenciais:
-        if credencial["servico"] == servico_excluir:
+        if credencial["servico"].lower() == servico_excluir.lower():
             credenciais.remove(credencial)
             salvar_arquivo()
             registrar_log("Exclusão de credencial", servico_excluir)
