@@ -62,18 +62,36 @@ def consultar_logs():
     except FileNotFoundError:
         print("Nenhum log foi gerado ainda.")
 
+#Carregar categrias
+def salvar_categorias():
+    with open("categorias.txt", "w", encoding="utf-8") as arquivo:
+        for categoria, exigencia in categorias.items():
+            arquivo.write(f"{categoria}|{exigencia}\n")
 
+
+def carregar_categorias():
+    try:
+        with open("categorias.txt", "r", encoding="utf-8") as arquivo:
+            for linha in arquivo:
+                linha = linha.strip()
+                if linha:
+                    partes = linha.split("|", 1)
+                    if len(partes) == 2:
+                        nome = partes[0]
+                        exigencia = partes[1]
+                        categorias[nome] = exigencia
+
+    except FileNotFoundError:
+        salvar_categorias()
+        
 credenciais = []
-categorias = [
-    "Rede Social", 
-    "Banco",
-    "E-mail",
-    "Lojas virtuais",
-    "Plataformas de estudo", 
-    "Streaming", 
-    "Jogos", 
-    "Outros"
-]
+categorias = {
+    "Banco": "Forte",
+    "Rede Social": "Média",
+    "Estudo":" Média",
+    "Trabalho": "Forte",
+    "Outros": "Fraca"
+}
 
 # Análise de senha
 def carregar_senhas_comuns():
