@@ -427,13 +427,16 @@ def relatorio_seguranca():
     fracas = 0
     repetidas = 0
     antigas = 0
+    comuns = 0
 
     senhas_encontradas = []
+    servicos_fracos = []
 
     for credencial in credenciais:
         senha = credencial["senha"]
         categoria = credencial["categoria"]
 
+        
         classificacao, motivos = analisar_senha(senha, categoria)
 
         if classificacao == "Forte":
@@ -442,12 +445,19 @@ def relatorio_seguranca():
             medias += 1
         else:
             fracas += 1
+            servicos_fracos.append(credencial["servico"])
 
+        
         if senha in senhas_encontradas:
             repetidas += 1
         else:
             senhas_encontradas.append(senha)
 
+        
+        if verificar_senha_comum(senha):
+            comuns += 1
+
+        
         data = datetime.strptime(
             credencial["data_atualizacao"],
             "%d/%m/%Y %H:%M"
@@ -458,29 +468,40 @@ def relatorio_seguranca():
         if dias > 90:
             antigas += 1
 
+    
     porcentagem_fracas = (fracas / total) * 100
 
+    
+    print("\n---------- RESUMO GERAL ----------")
     print("Total de credenciais:", total)
     print("Senhas fortes:", fortes)
     print("Senhas médias:", medias)
     print("Senhas fracas:", fracas)
     print("Senhas repetidas:", repetidas)
+    print("Senhas encontradas na lista de senhas comuns:", comuns)
     print("Senhas com mais de 90 dias:", antigas)
     print(f"Porcentagem de senhas fracas: {porcentagem_fracas:.1f}%")
 
-    print("\n---------- RECOMENDAÇÕES ----------")
+    print("\n---------- SERVIÇOS COM SENHAS FRACAS ----------")
 
-    if fracas > 0:
-        print("- Melhore as senhas classificadas como fracas.")
+    if len(servicos_fracos) > 0:
+        for servico in servicos_fracos:
+            print("-", servico)
+    else:
+        print("Nenhum serviço possui senha fraca.")
 
-    if repetidas > 0:
-        print("- Evite utilizar a mesma senha em serviços diferentes.")
+    
+    print("\n---------- TEMPO DESDE A ÚLTIMA ALTERAÇÃO ----------")
 
-    if antigas > 0:
-        print("- Revise as senhas que não são alteradas há mais de 90 dias.")
+    for credencial in credenciais:
+        data = datetime.strptime(
+            credencial["data_atualizacao"],
+            "%d/%m/%Y %H:%M"
+        )
 
-    if fracas == 0 and repetidas == 0 and antigas == 0:
-        print("- Nenhum problema identificado pelos critérios do relatório.")
+        dias = (datetime.now() - data).days
+
+        print(f"{credencial['servico']}: {dias} dias")
 
     registrar_log("Consulta de relatório de segurança", "CofreSeguro")
 
