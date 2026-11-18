@@ -388,7 +388,17 @@ def visualizar_categorias():
     for categoria in categorias:
         print(f"{categoria}")
 
+# Perguntar se o usuário deseja continuar
+def deseja_continuar():
+    while True:
+        resposta = input("\nDeseja continuar ou encerrar o programa? (1 - continuar / 2 - encerrar): ").strip()
 
+        if resposta == "1":
+            return True
+        elif resposta == "2":
+            return False
+        else:
+            print("Opção inválida. Digite 1 para continuar ou 2 para encerrar.")
 # Menu
 while True:
     print("\n--------- COFRESEGURO ---------")
@@ -396,13 +406,12 @@ while True:
     print("2 - Visualizar Credenciais")
     print("3 - Editar Credencial")
     print("4 - Excluir Credencial")
-    print("5 - Sair")
-    print("6 - Revelar Senha")
-    print("7 - Cadastrar Categoria")
-    print("8 - Consultar Categorias")
-    print("9 - Consultar Log de Auditoria")
-    print("10 - Verificar Senhas Repetidas")
-
+    print("5 - Revelar Senha")
+    print("6 - Cadastrar Categoria")
+    print("7 - Consultar Categorias")
+    print("8 - Consultar Log de Auditoria")
+    print("9 - Verificar Senhas Repetidas")
+    print("10 - Sair")
     opcao = input("Digite a opção: ")
 
     if opcao == "1":
@@ -418,23 +427,27 @@ while True:
         excluir_credenciais()
 
     elif opcao == "5":
+        revelar_senha()
+
+    elif opcao == "6":
+        cadastrar_categoria()
+
+    elif opcao == "7":
+        visualizar_categorias()
+
+    elif opcao == "8":
+        consultar_logs()
+
+    elif opcao == "9":
+        verificar_todas_senhas_repetidas()
+
+    elif opcao == "10":
         print("Encerrando o CofreSeguro...")
         break
 
-    elif opcao == "6":
-        revelar_senha()
-
-    elif opcao == "7":
-        cadastrar_categoria()
-
-    elif opcao == "8":
-        visualizar_categorias()
-
-    elif opcao == "9":
-        consultar_logs()
-
-    elif opcao == "10":
-        verificar_todas_senhas_repetidas()
-
     else:
         print("Opção inválida!")
+
+    if not deseja_continuar():
+        print("Encerrando o CofreSeguro...")
+        break
