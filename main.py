@@ -1,4 +1,5 @@
 from datetime import datetime
+
 #manipulação do arquivo 
 def registrar_senha(nova_credencial):
     data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -9,8 +10,7 @@ def registrar_senha(nova_credencial):
         f"[Serviço: {nova_credencial['servico']} | Usuario: {nova_credencial['usuario']} | Senha: {nova_credencial['senha']} | Categoria: {nova_credencial['categoria']} | Observacoes: {nova_credencial['observacoes']} | Atualizado: {nova_credencial['data_atualizacao']}]\n"
     )
     arquivo.close()
-  
-
+    
 # Registro no arquivo de auditoria
 def registrar_log(operacao, servico):
     data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -159,13 +159,58 @@ def exibir_analise_senha(senha, categoria):
     for motivo in motivos:
         print("-", motivo)
 
+
+# Detecção de risco (senha repetida)
+def verificar_senha_repetida(credencial_atual):
+    servicos_repetidos = []
+
+    for credencial in credenciais:
+        if credencial is not credencial_atual and credencial["senha"] == credencial_atual["senha"]:
+            servicos_repetidos.append(credencial["servico"])
+
+    if len(servicos_repetidos) > 0:
+        print("\n! ALERTA DE RISCO !")
+        print("Essa senha também é usada em outros serviços:")
+        for servico in servicos_repetidos:
+            print("-", servico)
+        print("Se um deles vazar, todos os outros ficam expostos. Troque as senhas!")
+
+        # Registrar no log:
+        registrar_log("Alerta de senha repetida", credencial_atual["servico"])
+
+
+# Detecção de risco (todas as senhas repetidas)
+def verificar_todas_senhas_repetidas():
+    grupos = {}
+
+    for credencial in credenciais:
+        senha = credencial["senha"]
+        if senha in grupos:
+            grupos[senha].append(credencial["servico"])
+        else:
+            grupos[senha] = [credencial["servico"]]
+
+    print("\n---------- DETECÇÃO DE RISCO ----------")
+    encontrou_risco = False
+
+    for senha in grupos:
+        if len(grupos[senha]) > 1:
+            encontrou_risco = True
+            print("\nSenha repetida em", len(grupos[senha]), "serviços:")
+            for servico in grupos[senha]:
+                print("-", servico)
+
+    if encontrou_risco == False:
+        print("Nenhuma senha repetida encontrada.")
+    else:
+        # Registrar no log:
+        registrar_log("Verificação de risco", "! Senhas repetidas encontradas !")
+
+
 # Cadastro
 def cadastrar_credenciais():
     servico = input("Digite o nome do serviço: ")
     usuario = input("Digite o nome do usuário: ")
-
-    #subir motivos 
-    print("sugerir senhas ")
     senha = input("Digite a senha: ")
 
     print("\nCategorias disponíveis:")
@@ -183,17 +228,15 @@ def cadastrar_credenciais():
         "categoria": categoria,
         "observacoes": observacoes,
         "data_atualizacao": data_atualizacao
-
     }
     registrar_senha(nova_credencial)
-    
-    
     credenciais.append(nova_credencial)
 # Registrar no log:
     registrar_log("Cadastro de credencial", servico)
 
     print("Cadastro confirmado!")
     exibir_analise_senha(senha, categoria)
+    verificar_senha_repetida(nova_credencial)
 
 
 # Visualização
@@ -258,6 +301,7 @@ def editar_credenciais():
                 nova_senha,
                 credencial["categoria"]
             )
+            verificar_senha_repetida(credencial)
             break
 
     if encontrado == False:
@@ -322,6 +366,7 @@ while True:
     print("7 - Cadastrar Categoria")
     print("8 - Consultar Categorias")
     print("9 - Consultar Log de Auditoria")
+    print("10 - Verificar Senhas Repetidas")
 
     opcao = input("Digite a opção: ")
 
@@ -340,6 +385,24 @@ while True:
     elif opcao == "5":
         print("Encerrando o CofreSeguro...")
         break
+
+    elif opcao == "6":
+        revelar_senha()
+
+    elif opcao == "7":
+        cadastrar_categoria()
+
+    elif opcao == "8":
+        visualizar_categorias()
+
+    elif opcao == "9":
+        consultar_logs()
+
+    elif opcao == "10":
+        verificar_todas_senhas_repetidas()
+
+    else:
+        print("Opção inválida!")
 
     elif opcao == "6":
         revelar_senha()
