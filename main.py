@@ -13,11 +13,11 @@ def carregar_arquivo():
     try:
         with open("cofre_dados.txt", "r", encoding="utf-8") as arquivo:
             for linha in arquivo:
-                linha = linha.strip([])
+                linha = linha.strip()
                 if not linha:
                     continue
 
-                partes = [parte.strip() for parte in linha.split(“|”)]
+                partes = [parte.strip() for parte in linha.split("|")]
 
                 credencial = {
                     "servico": partes[0].split(": ", 1)[1],
@@ -346,11 +346,10 @@ def editar_credenciais():
             nova_senha = input("Qual será a senha nova? ")
 
             credencial["senha"] = nova_senha
-            credencial[“data_atualizacao”] = datetime.now().strftime(“%d/%m/%Y %H:%M”)
+            credencial["data_atualizacao"] = datetime.now().strftime("%d/%m/%Y %H:%M")
             salvar_arquivo()
             # Registrar no log:
             registrar_log("Alteração de senha", servico_editar)
-            credencial["data_atualizacao"] = datetime.now().strftime("%d/%m/%Y %H:%M")
 
             encontrado = True
             print("Senha alterada!")
