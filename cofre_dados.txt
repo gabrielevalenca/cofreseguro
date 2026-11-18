@@ -1,1 +1,3 @@
 [Serviço: teste1 | Usuario: gabi | Senha: 12345 | Categoria: outros | Observacoes: nao há observacao | Atualizado: 18/11/2026 14:59]
+[Serviço: teste_gab | Usuario: gabi123 | Senha: +xU$FcRF(kC5 | Categoria: outros | Observacoes: nao há observacao | Atualizado: 18/11/2026 15:36]
+[Serviço: teste_2 | Usuario: gabigabi | Senha: !(qlR4dxY*mw | Categoria: jogos | Observacoes: sem observacao | Atualizado: 18/11/2026 15:37]
