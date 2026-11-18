@@ -388,6 +388,80 @@ def visualizar_categorias():
     for categoria in categorias:
         print(f"{categoria}")
 
+#relatorio de segurança
+
+def relatorio_seguranca():
+    print("\n---------- RELATÓRIO DE SEGURANÇA ----------")
+
+    total = len(credenciais)
+
+    if total == 0:
+        print("Nenhuma credencial cadastrada.")
+        return
+
+    fortes = 0
+    medias = 0
+    fracas = 0
+    repetidas = 0
+    antigas = 0
+
+    senhas_encontradas = []
+
+    for credencial in credenciais:
+        senha = credencial["senha"]
+        categoria = credencial["categoria"]
+
+        classificacao, motivos = analisar_senha(senha, categoria)
+
+        if classificacao == "Forte":
+            fortes += 1
+        elif classificacao == "Média":
+            medias += 1
+        else:
+            fracas += 1
+
+        if senha in senhas_encontradas:
+            repetidas += 1
+        else:
+            senhas_encontradas.append(senha)
+
+        data = datetime.strptime(
+            credencial["data_atualizacao"],
+            "%d/%m/%Y %H:%M"
+        )
+
+        dias = (datetime.now() - data).days
+
+        if dias > 90:
+            antigas += 1
+
+    porcentagem_fracas = (fracas / total) * 100
+
+    print("Total de credenciais:", total)
+    print("Senhas fortes:", fortes)
+    print("Senhas médias:", medias)
+    print("Senhas fracas:", fracas)
+    print("Senhas repetidas:", repetidas)
+    print("Senhas com mais de 90 dias:", antigas)
+    print(f"Porcentagem de senhas fracas: {porcentagem_fracas:.1f}%")
+
+    print("\n---------- RECOMENDAÇÕES ----------")
+
+    if fracas > 0:
+        print("- Melhore as senhas classificadas como fracas.")
+
+    if repetidas > 0:
+        print("- Evite utilizar a mesma senha em serviços diferentes.")
+
+    if antigas > 0:
+        print("- Revise as senhas que não são alteradas há mais de 90 dias.")
+
+    if fracas == 0 and repetidas == 0 and antigas == 0:
+        print("- Nenhum problema identificado pelos critérios do relatório.")
+
+    registrar_log("Consulta de relatório de segurança", "CofreSeguro")
+
+
 # Perguntar se o usuário deseja continuar
 def deseja_continuar():
     while True:
@@ -411,7 +485,8 @@ while True:
     print("7 - Consultar Categorias")
     print("8 - Consultar Log de Auditoria")
     print("9 - Verificar Senhas Repetidas")
-    print("10 - Sair")
+    print("10 - Relatório de Segurança")
+    print("11 - Sair")
     opcao = input("Digite a opção: ")
 
     if opcao == "1":
@@ -442,6 +517,9 @@ while True:
         verificar_todas_senhas_repetidas()
 
     elif opcao == "10":
+        relatorio_seguranca()
+
+    elif opcao == "11":
         print("Encerrando o CofreSeguro...")
         break
 
