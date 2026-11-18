@@ -2,15 +2,35 @@ from datetime import datetime
 import random
 
 #manipulação do arquivo 
-def registrar_senha(nova_credencial):
+def salvar_arquivo():
     data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    with open("cofre_dados.txt", "w", encoding="utf-8") as arquivo:
+        for cred in credenciais:
+        
+         arquivo.write(f"[Serviço: {cred['servico']} | Usuario: {cred['usuario']} | Senha: {cred['senha']} | Categoria: {cred['categoria']} | Observacoes: {cred['observacoes']} | Atualizado: {cred['data_atualizacao']}]\n" )
 
-    analisar_senha(nova_credencial['senha'], nova_credencial['categoria'])
-    arquivo = open("cofre_dados.txt", "a", encoding="utf-8")
-    arquivo.write(
-        f"[Serviço: {nova_credencial['servico']} | Usuario: {nova_credencial['usuario']} | Senha: {nova_credencial['senha']} | Categoria: {nova_credencial['categoria']} | Observacoes: {nova_credencial['observacoes']} | Atualizado: {nova_credencial['data_atualizacao']}]\n"
-    )
-    arquivo.close()
+def carregar_arquivo():
+    try:
+        with open("cofre_dados.txt", "r", encoding="utf-8") as arquivo:
+            for linha in arquivo:
+                linha = linha.strip()
+                if not linha:
+                    continue
+
+                partes = linha.split("|")
+
+                credencial = {
+                    "servico": partes[0].split(": ", 1)[1],
+                    "usuario": partes[1].split(": ", 1)[1],
+                    "senha": partes[2].split(": ", 1)[1],
+                    "categoria": partes[3].split(": ", 1)[1],
+                    "observacoes": partes[4].split(": ", 1)[1],
+                    "data_atualizacao": partes[5].split(": ", 1)[1]
+                }
+                credenciais.append(credencial)
+    except FileNotFoundError:
+        pass
+
     
 # Registro no arquivo de auditoria
 def registrar_log(operacao, servico):
@@ -263,8 +283,9 @@ def cadastrar_credenciais():
         "observacoes": observacoes,
         "data_atualizacao": data_atualizacao
     }
-    registrar_senha(nova_credencial)
+
     credenciais.append(nova_credencial)
+    salvar_arquivo()
     print("\nSenha salva com sucesso!")
 # Registrar no log:
     registrar_log("Cadastro de credencial", servico)
@@ -325,6 +346,7 @@ def editar_credenciais():
             nova_senha = input("Qual será a senha nova? ")
 
             credencial["senha"] = nova_senha
+            salvar_arquivo()
             # Registrar no log:
             registrar_log("Alteração de senha", servico_editar)
             credencial["data_atualizacao"] = datetime.now().strftime("%d/%m/%Y %H:%M")
@@ -351,6 +373,7 @@ def excluir_credenciais():
     for credencial in credenciais:
         if credencial["servico"] == servico_excluir:
             credenciais.remove(credencial)
+            salvar_arquivo()
             # Registro no log:
             registrar_log("Exclusão de credencial", servico_excluir)
             encontrado = True
@@ -473,6 +496,8 @@ def deseja_continuar():
             return False
         else:
             print("Opção inválida. Digite 1 para continuar ou 2 para encerrar.")
+
+carregar_arquivo()
 # Menu
 while True:
     print("\n--------- COFRESEGURO ---------")
