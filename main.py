@@ -7,17 +7,17 @@ def salvar_arquivo():
     with open("cofre_dados.txt", "w", encoding="utf-8") as arquivo:
         for cred in credenciais:
         
-         arquivo.write(f"[Serviço: {cred['servico']} | Usuario: {cred['usuario']} | Senha: {cred['senha']} | Categoria: {cred['categoria']} | Observacoes: {cred['observacoes']} | Atualizado: {cred['data_atualizacao']}]\n" )
+         arquivo.write(f"Serviço: {cred['servico']} | Usuario: {cred['usuario']} | Senha: {cred['senha']} | Categoria: {cred['categoria']} | Observacoes: {cred['observacoes']} | Atualizado: {cred['data_atualizacao']}\n" )
 
 def carregar_arquivo():
     try:
         with open("cofre_dados.txt", "r", encoding="utf-8") as arquivo:
             for linha in arquivo:
-                linha = linha.strip()
+                linha = linha.strip([])
                 if not linha:
                     continue
 
-                partes = linha.split("|")
+                partes = [parte.strip() for parte in linha.split(“|”)]
 
                 credencial = {
                     "servico": partes[0].split(": ", 1)[1],
@@ -346,6 +346,7 @@ def editar_credenciais():
             nova_senha = input("Qual será a senha nova? ")
 
             credencial["senha"] = nova_senha
+            credencial[“data_atualizacao”] = datetime.now().strftime(“%d/%m/%Y %H:%M”)
             salvar_arquivo()
             # Registrar no log:
             registrar_log("Alteração de senha", servico_editar)
