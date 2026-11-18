@@ -1,4 +1,5 @@
 from datetime import datetime
+import random
 
 #manipulação do arquivo 
 def registrar_senha(nova_credencial):
@@ -158,7 +159,26 @@ def exibir_analise_senha(senha, categoria):
     print("\nMotivos da classificação:")
     for motivo in motivos:
         print("-", motivo)
+def gerar_senha_forte():
+    maiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    minusculas = "abcdefghijklmnopqrstuvwxyz"
+    numeros = "0123456789"
+    simbolos = "!@#$%&*()-_+=.;:?"
 
+    senha = random.choice(maiusculas)
+    senha += random.choice(minusculas)
+    senha += random.choice(numeros)
+    senha += random.choice(simbolos)
+
+    todos_caracteres = maiusculas + minusculas + numeros + simbolos
+
+    for i in range(8):
+        senha += random.choice(todos_caracteres)
+    senha_lista = list(senha)
+    random.shuffle(senha_lista)
+    senha = "".join(senha_lista)
+
+    return senha
 
 # Detecção de risco (senha repetida)
 def verificar_senha_repetida(credencial_atual):
@@ -211,8 +231,22 @@ def verificar_todas_senhas_repetidas():
 def cadastrar_credenciais():
     servico = input("Digite o nome do serviço: ")
     usuario = input("Digite o nome do usuário: ")
-    senha = input("Digite a senha: ")
+    print("\n Como deseja criar sua senha?")
+    print("1 - Gerar uma senha forte automaticamente")
+    print("2 - Digitar minha própria senha")
 
+    opcao_senha = input("Escolha uma opção: ")
+
+    if opcao_senha == "1": 
+        senha = gerar_senha_forte()
+        print("\nSenha sugerida:", senha)
+    elif opcao_senha == "2":
+        senha = input("Digite sua senha: ")
+    else:
+        print("Opção inválida! Cadastro cancelado.")
+        return
+
+    
     print("\nCategorias disponíveis:")
     visualizar_categorias()
 
@@ -231,6 +265,7 @@ def cadastrar_credenciais():
     }
     registrar_senha(nova_credencial)
     credenciais.append(nova_credencial)
+    print("\nSenha salva com sucesso!")
 # Registrar no log:
     registrar_log("Cadastro de credencial", servico)
 
