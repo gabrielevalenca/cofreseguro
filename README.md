@@ -8,9 +8,12 @@
 - Registro de auditoria - Gabriele Valença | Github: https://github.com/gabrielevalenca 
 - Armazenamento de dados - Maria Eduarda Escanoni | Github: https://github.com/mariaeduardaescanoni-lgtm 
 -  Relatório de segurança - Gabriela Barradas | Github: https://github.com/gabrielabborba2008-ship-it 
-- Funcionalidade extra - Todo grupo 
+- Funcionalidade extra - Todo grupo
 
-#### O arquivo para testar é: https://github.com/gabrielevalenca/cofre_seguro_fp/blob/main/integrado2.py 
+### REQUISITO EXTRA
+- O programa sugere uma senha forte gerada automaticamente, caso o usuário opte por ela. Caso não deseje, o usuário pode digitar sua própria senha
+
+#### O arquivo para testar é: https://github.com/gabrielevalenca/cofreseguro/blob/main/main.py 
 
 #### É indicado a instalação de alguma IDE de código, como: VScode, e a extenção Python caso ainda não tenha.
 
@@ -23,4 +26,3 @@ Atualmente não há interação com Agente de IA e nem interface, ou seja, tudo 
 - DEVE CONTER PELO MENOS UM NÚMERO; 
 - DEVE CONTER PELO MENOS UM SÍMBOLO/ CARACTER ESPECIAL;
 
-### DECISÕES DE SEGURANÇA
